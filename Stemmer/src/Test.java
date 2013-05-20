@@ -14,13 +14,15 @@ public class Test
 	public static void main(String[] args)
 	{
 		long startTime = System.currentTimeMillis();
-		// Test.tokenizator();
+		// // Test.tokenizator();
 		// Test.getWords();
-		// Test.getSimilarityMatrix();
+		//Test.getSimilarityMatrix();
 		Test.getSinleLinkClusters();
 
 		long estimatedTime = System.currentTimeMillis() - startTime;
 		System.out.println("Time elased: " + estimatedTime / 1000d + "s");
+
+		// testSyllableWord();
 	}
 
 	private static void tokenizator()
@@ -56,7 +58,7 @@ public class Test
 	{
 		NGram nGram = new NGram();
 		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWords(new File(
-				"TestTextFile.txt"), 3, 3);
+				"TestTextFile2.txt"), 3, 0);
 		System.out.println(wordMap);
 		double[][] matrix = nGram.getSiminaliryMatrix(wordMap, NGram.SimilarityType.DICE);
 		DecimalFormat twoDForm = new DecimalFormat("#.#");
@@ -76,7 +78,7 @@ public class Test
 	{
 		NGram nGram = new NGram();
 		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWords(new File(
-				"TestTextFile2.txt"), 3, 3);
+				"TestTextFile2.txt"), 3, 0);
 		System.out.println("no of distinct words: " + wordMap.size());
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
 		double[][] matrix = nGram.getSiminaliryMatrix(wordMap, NGram.SimilarityType.COSINE);
@@ -138,5 +140,24 @@ public class Test
 
 		System.out.println(lists.size() + " & " + averageWordsPerCluster + " & " + max + " & "
 				+ min);
+	}
+
+	public static void testSyllableWord()
+	{
+		String words[] =
+		{ "политика", "Македонија", "печатењето", "збере", "снесе", "Марија", "Цвета", "човек",
+				"снежен", "радост", "милост", "страда", "ослади", "убиец", "опревме", "маж",
+				"врат", "дожд", "смрт", "мажот", "вратот", "жолтиот", "дождот", "смртта", "знаење",
+				"веење", "виење", "броење", "виулица", "влегоа", "носеа", "гледаа", "мачка",
+				"тргне", "страшно", "мавне", "гуска", "гажва", "брашно", "рамнина", "мисла",
+				"гозба", "проста", "лажна", "братство", "гимназиски", "единствен", "богатство",
+				"скопски", "величествен", "друштво", "ученички", "суштествен", "творештво",
+				"човечки", "ладнокрвност", "тврдоглавост", "долговечност", "предвидлив",
+				"предуслов", "претседател", "испопрегледа", "диспропорција", "дисконтинуитет",
+				"разум", "одделение", "обессили" };
+		// { "тврдоглавост", "предуслов", "испопрегледа" };
+		// { "диспропорција" };
+		for (String s : words)
+			System.out.println(Tokenizator.syllableWord(s));
 	}
 }

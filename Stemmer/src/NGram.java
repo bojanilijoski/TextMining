@@ -116,6 +116,7 @@ public class NGram
 	}
 
 	// Cosine coefficient
+	//TODO neshto ne e vo red, mozhno e da ne e taka formulata
 	private static double getSimilarityCosine(ArrayList<String> word1, ArrayList<String> word2)
 	{
 		// count similarNGrams

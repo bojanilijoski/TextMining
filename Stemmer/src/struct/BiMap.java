@@ -1,6 +1,7 @@
 package struct;
 
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 public class BiMap <K, V>
 {
@@ -28,6 +29,16 @@ public class BiMap <K, V>
     public V get(K k)
     {
     	return keyToVal_.get(k);
+    }
+    
+	public Set<K> getKeyList()
+    {
+    	return keyToVal_.keySet();
+    }
+	
+	public Set<V> getList()
+    {
+    	return valToKey_.keySet();
     }
     
     public String toString()

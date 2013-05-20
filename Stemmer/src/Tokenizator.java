@@ -22,6 +22,24 @@ public class Tokenizator
 	{ '.', ',', '"', '\'', '?', '!', '/', '\\', '*', '@', '$', '#', '%', '^', '^', '&', '(', ')',
 			'{', '}', '[', ']', ';', ':', '<', '>', '_', '-', '+', '=', '|', '„', '“', '’', '‘' };
 
+	private static final char[] vowels =
+	{ 'à', 'å', 'è', 'î', 'ó' };
+
+	/**
+	 * 
+	 * @param file
+	 *            a file which should be splitted in words
+	 * @param minimumLength
+	 *            minimum length of word (all smaller words are ignored)
+	 * 
+	 * @return HashMap<String, ArrayList<String>> hashMap where word is a key and value is a list of
+	 *         n-grams of that word
+	 */
+	public static HashMap<String, ArrayList<String>> getWords(File file, int minimumLength)
+	{
+		return getWords(file, minimumLength, 0);
+	}
+
 	/**
 	 * 
 	 * @param file
@@ -36,6 +54,9 @@ public class Tokenizator
 	public static HashMap<String, ArrayList<String>> getWords(File file, int minimumLength,
 			int nGramLength)
 	{
+		if (nGramLength < 0)
+			return null;
+
 		// HashMap with keyValue=word and ArrayList of N-grams of that word
 		LinkedHashMap<String, ArrayList<String>> wordMap = new LinkedHashMap<>();
 
@@ -60,7 +81,10 @@ public class Tokenizator
 					word = word.trim();
 					if (word.length() >= minimumLength)
 						if (!wordMap.containsKey(word))
-							wordMap.put(word, nGramWord(word, nGramLength));
+							if (nGramLength > 0)
+								wordMap.put(word, nGramWord(word, nGramLength));
+							else
+								wordMap.put(word, syllableWord(word));
 				}
 
 				line = br.readLine();
@@ -159,5 +183,79 @@ public class Tokenizator
 		}
 
 		return nGramList;
+	}
+
+	/**
+	 * 
+	 * @param word
+	 * @return list of syllables of that word
+	 */
+	public static ArrayList<String> syllableWord(String word)
+	{
+		ArrayList<String> syllableList = new ArrayList<>();
+		ArrayList<Integer> vowelsIndexes = new ArrayList<>();
+
+		int pretVowel = -1;
+		int indexLastR = -1;
+		for (int i = 0; i < word.length(); i++)
+		{
+			char c = word.charAt(i);
+
+			if (c == 'ð')
+			{
+				indexLastR = i;
+				continue;
+			}
+
+			if (isVowel(c))
+			{
+				// more than 4 characters than 'r' is vowel
+				if (i - pretVowel > 4 && indexLastR < i && indexLastR > pretVowel)
+					vowelsIndexes.add(indexLastR);
+
+				vowelsIndexes.add(i);
+				pretVowel = i;
+			}
+		}
+
+		int tek = 0;
+		for (int i = 0; i < vowelsIndexes.size() - 1; i++)
+		{
+			int index = vowelsIndexes.get(i);
+			int dis = vowelsIndexes.get(i + 1) - index;// distance between vowels
+
+			// no character between vowels
+			if (dis == 1)
+			{
+				syllableList.add(word.substring(tek, index + 1));
+				tek = index + 1;
+			}
+			// one character between vowels
+			if (dis == 2)
+			{
+				syllableList.add(word.substring(tek, index + 1));
+				tek = index + 1;
+			}
+			// two or more characters between vowels
+			if (dis > 2)
+			{
+				syllableList.add(word.substring(tek, index + 2));
+				tek = index + 2;
+			}
+
+		}
+		// add last syllable
+		syllableList.add(word.substring(tek, word.length()));
+
+		return syllableList;
+	}
+
+	private static boolean isVowel(char c)
+	{
+		for (char ch : vowels)
+			if (ch == c)
+				return true;
+
+		return false;
 	}
 }

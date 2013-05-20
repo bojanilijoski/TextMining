@@ -2,9 +2,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
+import struct.BiMap;
+
 public class SingleLink
 {
 
+	/**
+	 * 
+	 * @param similarityMatrix
+	 * @param threshold
+	 * @return sets of similar items
+	 */
 	public static ArrayList<ArrayList<Integer>> getSinleLinkClusters(double[][] similarityMatrix,
 			double threshold)
 	{
@@ -37,14 +45,14 @@ public class SingleLink
 		}
 
 		ArrayList<ArrayList<Integer>> clusters = new ArrayList<>();
-		
-		Integer [] keySet = new Integer[edges.keySet().size()];
+
+		Integer[] keySet = new Integer[edges.keySet().size()];
 		Arrays.sort(edges.keySet().toArray(keySet));
 
 		// iterate all words
 		for (Object object : keySet)
 		{
-			Integer word = (Integer)object;
+			Integer word = (Integer) object;
 			boolean clusterFound = false;
 			// iterate clusters
 			for (ArrayList<Integer> array : clusters)
@@ -67,5 +75,26 @@ public class SingleLink
 		}
 
 		return clusters;
+	}
+
+	public static ArrayList<ArrayList<String>> getMappedSinleLinkClusters(
+			BiMap<Integer, String> biMap, double[][] similarityMatrix, double threshold)
+	{
+		ArrayList<ArrayList<Integer>> arrayLists = SingleLink.getSinleLinkClusters(
+				similarityMatrix, threshold);
+
+		ArrayList<ArrayList<String>> lists = new ArrayList<>();
+
+		for (ArrayList<Integer> array : arrayLists)
+		{
+			ArrayList<String> list = new ArrayList<>();
+			for (Integer i : array)
+			{
+				list.add(biMap.get(i));
+			}
+			lists.add(list);
+		}
+
+		return lists;
 	}
 }
