@@ -29,7 +29,7 @@ public class NGram
 		// create similarity measure matrix
 		double[][] matrix = new double[words.size()][words.size()];
 
-		// create hash map asociated with word=index in matrix
+		// create hash map associated with word=index in matrix
 		wordMap = new BiMap<>();
 		int index = 0;
 		for (String word : words.keySet())

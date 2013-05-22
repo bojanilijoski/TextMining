@@ -35,9 +35,9 @@ public class Tokenizator
 	 * @return HashMap<String, ArrayList<String>> hashMap where word is a key and value is a list of
 	 *         n-grams of that word
 	 */
-	public static HashMap<String, ArrayList<String>> getWords(File file, int minimumLength)
+	public static HashMap<String, ArrayList<String>> getWordsTokens(File file, int minimumLength)
 	{
-		return getWords(file, minimumLength, 0);
+		return getWordsTokens(file, minimumLength, 0);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class Tokenizator
 	 * @return HashMap<String, ArrayList<String>> hashMap where word is a key and value is a list of
 	 *         n-grams of that word
 	 */
-	public static HashMap<String, ArrayList<String>> getWords(File file, int minimumLength,
+	public static HashMap<String, ArrayList<String>> getWordsTokens(File file, int minimumLength,
 			int nGramLength)
 	{
 		if (nGramLength < 0)
@@ -103,6 +103,53 @@ public class Tokenizator
 		}
 
 		return wordMap;
+	}
+
+	public static ArrayList<String> getWords(File file, int minimumLength)
+	{
+
+		// HashMap with keyValue=word and ArrayList of N-grams of that word
+		ArrayList<String> words = new ArrayList<>();
+
+		try
+		{
+			FileInputStream fis = new FileInputStream(file);
+			DataInputStream in = new DataInputStream(fis);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+
+			String line;
+			line = br.readLine();
+
+			int wordsCount = 0;
+
+			while (line != null)
+			{
+				String[] lineWords = cleanUpLine(line.toLowerCase()).split(" ");
+				wordsCount += lineWords.length;
+
+				for (String word : lineWords)
+				{
+					word = word.trim();
+					if (word.length() >= minimumLength)
+						words.add(word);
+				}
+
+				line = br.readLine();
+			}
+
+			System.out.println("no of words: " + wordsCount);
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("File not found");
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		return words;
 	}
 
 	/**
