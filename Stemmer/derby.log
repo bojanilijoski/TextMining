@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Tue May 21 16:34:51 CEST 2013:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance a816c00e-013e-c783-9a77-0000026e11c8 
-on database directory C:\Users\Bojan\workspace\textMining\DataBase\MyDB  with class loader sun.misc.Launcher$AppClassLoader@2d4e3d95 
+Sun May 26 21:27:28 CEST 2013:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance a816c00e-013e-e24f-4f58-0000026f0c98 
+on database directory C:\Users\Bojan\workspace\textMining\DataBase\MyDB  with class loader sun.misc.Launcher$AppClassLoader@6bad186f 
 Loaded from file:/C:/apache/db-derby-10.9.1.0-bin/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.7.0_21-b11

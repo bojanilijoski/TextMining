@@ -19,8 +19,8 @@ public class Tokenizator
 {
 	// set of characters which should be removed from text
 	private static final char[] unnecessaryCharacterSet =
-	{ '.', ',', '"', '\'', '?', '!', '/', '\\', '*', '@', '$', '#', '%', '^', '^', '&', '(', ')',
-			'{', '}', '[', ']', ';', ':', '<', '>', '_', '-', '+', '=', '|', '„', '“', '’', '‘' };
+	{ '.', ',', '"', '\'', '?', '!', '/', '\\', '*', '@', '$', '#', '%', '^', '^', '&', '(', ')', '{', '}', '[', ']', ';', ':', '<', '>', '_', '-',
+			'+', '=', '|', '„', '“', '’', '‘' };
 
 	private static final char[] vowels =
 	{ 'à', 'å', 'è', 'î', 'ó' };
@@ -40,6 +40,11 @@ public class Tokenizator
 		return getWordsTokens(file, minimumLength, 0);
 	}
 
+	public static HashMap<String, ArrayList<String>> getWordsTokens(File file, int minimumLength, int nGramLength)
+	{
+		return getWordsTokens(file, minimumLength, nGramLength, nGramLength - 1, nGramLength - 1);
+	}
+
 	/**
 	 * 
 	 * @param file
@@ -51,8 +56,7 @@ public class Tokenizator
 	 * @return HashMap<String, ArrayList<String>> hashMap where word is a key and value is a list of
 	 *         n-grams of that word
 	 */
-	public static HashMap<String, ArrayList<String>> getWordsTokens(File file, int minimumLength,
-			int nGramLength)
+	public static HashMap<String, ArrayList<String>> getWordsTokens(File file, int minimumLength, int nGramLength, int leadingBlanks, int endingBlanks)
 	{
 		if (nGramLength < 0)
 			return null;
@@ -82,7 +86,7 @@ public class Tokenizator
 					if (word.length() >= minimumLength)
 						if (!wordMap.containsKey(word))
 							if (nGramLength > 0)
-								wordMap.put(word, nGramWord(word, nGramLength));
+								wordMap.put(word, nGramWord(word, nGramLength, leadingBlanks, endingBlanks));
 							else
 								wordMap.put(word, syllableWord(word));
 				}
@@ -90,7 +94,7 @@ public class Tokenizator
 				line = br.readLine();
 			}
 
-			System.out.println("no of words: " + wordsCount);
+			// System.out.println("no of words: " + wordsCount);
 		}
 		catch (FileNotFoundException e)
 		{
@@ -178,56 +182,77 @@ public class Tokenizator
 	 */
 	private static ArrayList<String> nGramWord(String word, int nGramLength)
 	{
+		// // get leading nGrams
+		// for (int i = nGramLength - 1; i > 0; i--)
+		// {
+		// StringBuilder nGram = new StringBuilder();
+		// // add leading blanks
+		// for (int j = 0; j < i; j++)
+		// nGram.append(" ");
+		//
+		// // add characters
+		// for (int j = 0; j < nGramLength - i; j++)
+		// // if nGramLength is bigger than word.length than add ending blanks
+		// if (j < word.length())
+		// nGram.append(word.charAt(j));
+		// else
+		// nGram.append(" ");
+		//
+		// nGramList.add(nGram.toString());
+		// }
+		//
+		// // get middle nGrams
+		// for (int i = 0; i < word.length() - nGramLength + 1; i++)
+		// {
+		// nGramList.add((new StringBuilder(word.subSequence(i, i + nGramLength))).toString());
+		// }
+		//
+		// // get ending nGrams
+		// // condition because of duplicate
+		// // leading and ending nGram produce same nGram
+		// for (int i = nGramLength < word.length() ? nGramLength - 1 : nGramLength % 2 == 0 ?
+		// nGramLength - (nGramLength - word.length()) : nGramLength
+		// - (nGramLength - word.length()) - 1; i > 0; i--)
+		// {
+		// StringBuilder nGram = new StringBuilder();
+		// // add characters
+		// for (int j = i; j > 0; j--)
+		// {
+		// if (j <= word.length())
+		// nGram.append(word.charAt(word.length() - j));
+		// else
+		// nGram.append(" ");
+		// }
+		//
+		// // add ending blanks
+		// for (int j = 0; j < nGramLength - i; j++)
+		// nGram.append(" ");
+		//
+		// nGramList.add(nGram.toString());
+		// }
+
+		return nGramWord(word, nGramLength, nGramLength - 1, nGramLength - 1);
+	}
+
+	/**
+	 * 
+	 * @param word
+	 * @param nGramLength
+	 * @return list of nGrams with length nGramLength from word word with one leading and ending
+	 *         blank
+	 */
+	private static ArrayList<String> nGramWord(String word, int nGramLength, int leadingBlanks, int endingBlanks)
+	{
 		ArrayList<String> nGramList = new ArrayList<>();
 
-		// get leading nGrams
-		for (int i = nGramLength - 1; i > 0; i--)
-		{
-			StringBuilder nGram = new StringBuilder();
-			// add leading blanks
-			for (int j = 0; j < i; j++)
-				nGram.append(" ");
+		for (int i = 0; i < leadingBlanks; i++)
+			word = new String(" " + word);
 
-			// add characters
-			for (int j = 0; j < nGramLength - i; j++)
-				// if nGramLength is bigger than word.length than add ending blanks
-				if (j < word.length())
-					nGram.append(word.charAt(j));
-				else
-					nGram.append(" ");
+		for (int i = 0; i < endingBlanks; i++)
+			word = new String(word + " ");
 
-			nGramList.add(nGram.toString());
-		}
-
-		// get middle nGrams
 		for (int i = 0; i < word.length() - nGramLength + 1; i++)
-		{
-			nGramList.add((new StringBuilder(word.subSequence(i, i + nGramLength))).toString());
-		}
-
-		// get ending nGrams
-		// condition because of duplicate
-		// leading and ending nGram produce same nGram
-		for (int i = nGramLength < word.length() ? nGramLength - 1
-				: nGramLength % 2 == 0 ? nGramLength - (nGramLength - word.length()) : nGramLength
-						- (nGramLength - word.length()) - 1; i > 0; i--)
-		{
-			StringBuilder nGram = new StringBuilder();
-			// add characters
-			for (int j = i; j > 0; j--)
-			{
-				if (j <= word.length())
-					nGram.append(word.charAt(word.length() - j));
-				else
-					nGram.append(" ");
-			}
-
-			// add ending blanks
-			for (int j = 0; j < nGramLength - i; j++)
-				nGram.append(" ");
-
-			nGramList.add(nGram.toString());
-		}
+			nGramList.add(new String(word.substring(i, i + nGramLength)));
 
 		return nGramList;
 	}

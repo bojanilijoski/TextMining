@@ -17,8 +17,8 @@ public class Test
 		// // Test.tokenizator();
 		// Test.getWords();
 		// Test.getSimilarityMatrix();
-		//Test.getSinleLinkClusters();
-		getSimilarityMatrixYASS();
+		// Test.getSinleLinkClusters();
+		getWords();
 
 		long estimatedTime = System.currentTimeMillis() - startTime;
 		System.out.println("Time elased: " + estimatedTime / 1000d + "s");
@@ -29,7 +29,7 @@ public class Test
 	private static void tokenizator()
 	{
 		// Tokenizator tokenizator = new Tokenizator();
-		// ArrayList<String> arrayList = tokenizator.nGramWord("abcdef", 11);
+		// ArrayList<String> arrayList = tokenizator.getWordsTokens("TestTextFile2.txt", 2);
 		// for (String s : arrayList)
 		// {
 		// System.out.println(s + ": " + s.length());
@@ -44,15 +44,15 @@ public class Test
 		// System.out.println(s + ": " + s.length());
 		// }
 		// }
-		// System.out.println(tokenizator.nGramWord("abcdefghijklmnopqrstuvwxyz",
-		// 4).get(tokenizator.nGramWord("abcdefghijklmnopqrstuvwxyz", 4).size()-1).length());
-		
+		// System.out.println(tokenizator.nGramWord("abcdefghijklmnopqrstuvwxyz", 4)
+		// .get(tokenizator.nGramWord("abcdefghijklmnopqrstuvwxyz", 4).size()-1).length());
+
 	}
 
 	private static void getWords()
 	{
 		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(
-				"TestTextFile.txt"), 3, 3);
+				"TestTextFile2.txt"), 3, 3, 2, 1);
 		System.out.println(wordMap);
 	}
 
@@ -102,7 +102,7 @@ public class Test
 				"TestTextFile2.txt"), 3, 0);
 		System.out.println("no of distinct words: " + wordMap.size());
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
-		double[][] matrix = nGram.getSiminaliryMatrix(wordMap, NGram.SimilarityType.COSINE);
+		double[][] matrix = nGram.getSiminaliryMatrix(wordMap, NGram.SimilarityType.DICE);
 		BiMap<Integer, String> biMap = nGram.getWordMap();
 		System.out.println(biMap);
 		double minValue = Double.MAX_VALUE;
@@ -181,4 +181,5 @@ public class Test
 		for (String s : words)
 			System.out.println(Tokenizator.syllableWord(s));
 	}
+
 }
