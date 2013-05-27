@@ -18,7 +18,7 @@ public class Test
 		// Test.getWords();
 		// Test.getSimilarityMatrix();
 		// Test.getSinleLinkClusters();
-		getWords();
+		getSimilarityMatrix();
 
 		long estimatedTime = System.currentTimeMillis() - startTime;
 		System.out.println("Time elased: " + estimatedTime / 1000d + "s");
@@ -52,7 +52,7 @@ public class Test
 	private static void getWords()
 	{
 		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(
-				"TestTextFile2.txt"), 3, 3, 2, 1);
+				"TestTextFile2.txt"), 3, 2, 1, 1);
 		System.out.println(wordMap);
 	}
 
@@ -60,16 +60,16 @@ public class Test
 	{
 		NGram nGram = new NGram();
 		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(
-				"TestTextFile2.txt"), 3, 0);
+				"TestTextFile2.txt"), 3, 2, 1, 1);
 		System.out.println(wordMap);
-		double[][] matrix = nGram.getSiminaliryMatrix(wordMap, NGram.SimilarityType.DICE);
-		DecimalFormat twoDForm = new DecimalFormat("#.#");
+		double[][] matrix = nGram.getSiminaliryMatrix(wordMap, NGram.SimilarityType.NEW_SIMILARITY_LINEAR);
+		DecimalFormat twoDForm = new DecimalFormat("#.###");
 
 		for (int i = 0; i < matrix.length; i++)
 		{
 			for (int j = 0; j < matrix.length; j++)
 			{
-				System.out.print(Double.valueOf(twoDForm.format(matrix[i][j])) + " ");
+				System.out.print(Double.valueOf(twoDForm.format(matrix[i][j])) + "\t");
 			}
 			System.out.println();
 		}

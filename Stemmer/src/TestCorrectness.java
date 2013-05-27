@@ -19,36 +19,35 @@ public class TestCorrectness
 	public static void main(String[] args) throws IOException
 	{
 		String files[] =
-		{ "TestTextFile2.txt" };
-		// { "Text_Sport.txt", "Text_HariPoter.txt", "Text_twitter_DobroUtro.txt" };
+		// { "TestTextFile2.txt" };
+		{ "Text_HariPoter.txt", "Text_Sport.txt", "Text_twitter_DobroUtro.txt" };
 		NGram.SimilarityType[] types =
-		{ NGram.SimilarityType.COSINE, NGram.SimilarityType.DICE, NGram.SimilarityType.JACCARD, NGram.SimilarityType.OVERLAP,
-				NGram.SimilarityType.SIMPLE };
+		{ NGram.SimilarityType.COSINE, NGram.SimilarityType.DICE, NGram.SimilarityType.JACCARD, NGram.SimilarityType.NEW_SIMILARITY_LINEAR,
+				NGram.SimilarityType.NEW_SIMILARITY_QUADRATIC, NGram.SimilarityType.OVERLAP, NGram.SimilarityType.SIMPLE };
 
-		for (int i = 2; i < 6; i++)
-		{
-			for (NGram.SimilarityType type : types)
+		for (NGram.SimilarityType type : types)
+			for (int i = 2; i < 6; i++)
 				for (String file : files)
 					testNGram(i, file, type);
-		}
+
 	}
 
 	public static void testNGram(int _nGram, String _fileName, NGram.SimilarityType _type) throws IOException
 	{
 
 		NGram nGram = new NGram();
-		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(_fileName), 3, _nGram, 0, 0);
+		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(_fileName), 3, _nGram, _nGram - 1, _nGram - 1);
 		double[][] similarityMatrix = nGram.getSiminaliryMatrix(wordMap, _type);
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
 		// printanje na matricata na slichnost
 
-//		for (int i = 0; i < similarityMatrix.length; i++)
-//		{
-//			System.out.println();
-//			for (int j = 0; j < similarityMatrix.length; j++)
-//				System.out.print(Double.valueOf(twoDForm.format(similarityMatrix[i][j])) + " ");
-//		}
-
+		// for (int i = 0; i < similarityMatrix.length; i++)
+		// {
+		// System.out.println();
+		// for (int j = 0; j < similarityMatrix.length; j++)
+		// System.out.print(Double.valueOf(twoDForm.format(similarityMatrix[i][j])) + " ");
+		// }
+		//
 		// System.out.println();
 		BiMap<Integer, String> biMap = nGram.getWordMap();// reden broj <-> zbor
 		// System.out.println("number of distinct words: " + biMap.size());
@@ -102,7 +101,7 @@ public class TestCorrectness
 
 						if (stemJ.compareTo(stemI) == 0)
 						{
-							similarityList.add((double) Math.round(similarityMatrix[i][j] * 100) / 100);
+							similarityList.add((double) Math.round(similarityMatrix[i][j] * 1000) / 1000);
 							same = true;
 						}
 
@@ -113,7 +112,7 @@ public class TestCorrectness
 						break;
 				}
 				if (!same)
-					nonSimilarityList.add((double) Math.round(similarityMatrix[i][j] * 100) / 100);
+					nonSimilarityList.add((double) Math.round(similarityMatrix[i][j] * 1000) / 1000);
 			}
 		}
 
@@ -134,13 +133,13 @@ public class TestCorrectness
 		for (Double d : similarityList)
 			sumSim += d;
 		double averageSim = sumSim / similarityList.size();
-		averageSim = (double) Math.round(averageSim * 100) / 100;
+		averageSim = (double) Math.round(averageSim * 1000) / 1000;
 
 		double sumNonSim = 0;
 		for (Double d : nonSimilarityList)
 			sumNonSim += d;
 		double averageNonSim = sumNonSim / nonSimilarityList.size();
-		averageNonSim = (double) Math.round(averageNonSim * 100) / 100;
+		averageNonSim = (double) Math.round(averageNonSim * 1000) / 1000;
 
 		// System.out.println("max similarity: " + similarityList.get(similarityList.size() - 1));
 		// System.out.println("max non similarity: " +
@@ -157,9 +156,9 @@ public class TestCorrectness
 		// System.out.println(similarityList);
 		// System.out.println(nonSimilarityList);
 
-		System.out.println(similarityList.get(similarityList.size() - 1) + "\t" + nonSimilarityList.get(nonSimilarityList.size() - 1) + "\t"
-				+ similarityList.get(0) + "\t" + similarityList.get(0) + "\t" + medianSim + "\t" + medianNonSim + "\t" + averageSim + "\t"
-				+ averageNonSim);
+		System.out.println(_nGram + "\t" + similarityList.get(similarityList.size() - 1) + "\t" + nonSimilarityList.get(nonSimilarityList.size() - 1)
+				+ "\t" + similarityList.get(0) + "\t" + similarityList.get(0) + "\t" + medianSim + "\t" + medianNonSim + "\t" + averageSim + "\t"
+				+ averageNonSim + "\t" + _type + "\t" + _fileName);
 
 		FileWriter fstream = new FileWriter("results.txt");
 		BufferedWriter out = new BufferedWriter(fstream);
