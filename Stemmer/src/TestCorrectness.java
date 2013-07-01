@@ -20,10 +20,12 @@ public class TestCorrectness
 	{
 		String files[] =
 		// { "TestTextFile2.txt" };
-		{ "Text_HariPoter.txt", "Text_Sport.txt", "Text_twitter_DobroUtro.txt" };
+		{ "Text_Zoran.txt", "Text_Sport.txt", "Text_Ekonomija.txt" };
 		NGram.SimilarityType[] types =
-		{ NGram.SimilarityType.COSINE, NGram.SimilarityType.DICE, NGram.SimilarityType.JACCARD, NGram.SimilarityType.NEW_SIMILARITY_LINEAR,
-				NGram.SimilarityType.NEW_SIMILARITY_QUADRATIC, NGram.SimilarityType.OVERLAP, NGram.SimilarityType.SIMPLE };
+		{ NGram.SimilarityType.DICE, NGram.SimilarityType.JACCARD, NGram.SimilarityType.OVERLAP, NGram.SimilarityType.LINEAR_MEASURE1,
+				NGram.SimilarityType.LINEAR_MEASURE2, NGram.SimilarityType.LINEAR_MEASURE3, NGram.SimilarityType.LINEAR_MEASURE4,
+				NGram.SimilarityType.QUADRATIC_MEASURE1, NGram.SimilarityType.QUADRATIC_MEASURE2, NGram.SimilarityType.QUADRATIC_MEASURE3,
+				NGram.SimilarityType.QUADRATIC_MEASURE4 };
 
 		for (NGram.SimilarityType type : types)
 			for (int i = 2; i < 6; i++)
@@ -36,7 +38,7 @@ public class TestCorrectness
 	{
 
 		NGram nGram = new NGram();
-		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(_fileName), 3, _nGram, _nGram - 1, _nGram - 1);
+		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(_fileName), 3, _nGram, _nGram - 1, 1);
 		double[][] similarityMatrix = nGram.getSiminaliryMatrix(wordMap, _type);
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
 		// printanje na matricata na slichnost
@@ -79,6 +81,7 @@ public class TestCorrectness
 				ArrayList<String> stemsJ = wordStem.get(biMap.get(j));
 
 				boolean same = false;
+				boolean found = false;
 				for (String stemI : stemsI)
 				{
 					for (String stemJ : stemsJ)
@@ -89,6 +92,8 @@ public class TestCorrectness
 						// ni vo razlichni
 						if (stemI == null || stemJ == null)
 							continue;
+
+						found = true;
 
 						// if (similarityMatrix[i][j] > 1)
 						// {
@@ -111,7 +116,7 @@ public class TestCorrectness
 					if (same)
 						break;
 				}
-				if (!same)
+				if (!same && found)
 					nonSimilarityList.add((double) Math.round(similarityMatrix[i][j] * 1000) / 1000);
 			}
 		}

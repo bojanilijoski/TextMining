@@ -1,6 +1,7 @@
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import struct.BiMap;
@@ -19,6 +20,7 @@ public class Test
 		// Test.getSimilarityMatrix();
 		// Test.getSinleLinkClusters();
 		getSimilarityMatrix();
+		// testLineareMeasure();
 
 		long estimatedTime = System.currentTimeMillis() - startTime;
 		System.out.println("Time elased: " + estimatedTime / 1000d + "s");
@@ -51,18 +53,16 @@ public class Test
 
 	private static void getWords()
 	{
-		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(
-				"TestTextFile2.txt"), 3, 2, 1, 1);
+		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File("TestTextFile2.txt"), 3, 2, 1, 1);
 		System.out.println(wordMap);
 	}
 
 	private static void getSimilarityMatrix()
 	{
 		NGram nGram = new NGram();
-		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(
-				"TestTextFile2.txt"), 3, 2, 1, 1);
+		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File("TestTextFile2.txt"), 3, 2, 1, 1);
 		System.out.println(wordMap);
-		double[][] matrix = nGram.getSiminaliryMatrix(wordMap, NGram.SimilarityType.NEW_SIMILARITY_LINEAR);
+		double[][] matrix = nGram.getSiminaliryMatrix(wordMap, NGram.SimilarityType.QUADRATIC_MEASURE1);
 		DecimalFormat twoDForm = new DecimalFormat("#.###");
 
 		for (int i = 0; i < matrix.length; i++)
@@ -98,8 +98,7 @@ public class Test
 	private static void getSinleLinkClusters()
 	{
 		NGram nGram = new NGram();
-		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File(
-				"TestTextFile2.txt"), 3, 0);
+		HashMap<String, ArrayList<String>> wordMap = Tokenizator.getWordsTokens(new File("TestTextFile2.txt"), 3, 0);
 		System.out.println("no of distinct words: " + wordMap.size());
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
 		double[][] matrix = nGram.getSiminaliryMatrix(wordMap, NGram.SimilarityType.DICE);
@@ -159,27 +158,45 @@ public class Test
 		System.out.println("max size per cluster: " + max);
 		System.out.println("min size per cluster: " + min);
 
-		System.out.println(lists.size() + " & " + averageWordsPerCluster + " & " + max + " & "
-				+ min);
+		System.out.println(lists.size() + " & " + averageWordsPerCluster + " & " + max + " & " + min);
 	}
 
 	public static void testSyllableWord()
 	{
 		String words[] =
-		{ "политика", "Македонија", "печатењето", "збере", "снесе", "Марија", "Цвета", "човек",
-				"снежен", "радост", "милост", "страда", "ослади", "убиец", "опревме", "маж",
-				"врат", "дожд", "смрт", "мажот", "вратот", "жолтиот", "дождот", "смртта", "знаење",
-				"веење", "виење", "броење", "виулица", "влегоа", "носеа", "гледаа", "мачка",
-				"тргне", "страшно", "мавне", "гуска", "гажва", "брашно", "рамнина", "мисла",
-				"гозба", "проста", "лажна", "братство", "гимназиски", "единствен", "богатство",
-				"скопски", "величествен", "друштво", "ученички", "суштествен", "творештво",
-				"човечки", "ладнокрвност", "тврдоглавост", "долговечност", "предвидлив",
-				"предуслов", "претседател", "испопрегледа", "диспропорција", "дисконтинуитет",
-				"разум", "одделение", "обессили" };
+		{ "политика", "Македонија", "печатењето", "збере", "снесе", "Марија", "Цвета", "човек", "снежен", "радост", "милост", "страда", "ослади",
+				"убиец", "опревме", "маж", "врат", "дожд", "смрт", "мажот", "вратот", "жолтиот", "дождот", "смртта", "знаење", "веење", "виење",
+				"броење", "виулица", "влегоа", "носеа", "гледаа", "мачка", "тргне", "страшно", "мавне", "гуска", "гажва", "брашно", "рамнина",
+				"мисла", "гозба", "проста", "лажна", "братство", "гимназиски", "единствен", "богатство", "скопски", "величествен", "друштво",
+				"ученички", "суштествен", "творештво", "човечки", "ладнокрвност", "тврдоглавост", "долговечност", "предвидлив", "предуслов",
+				"претседател", "испопрегледа", "диспропорција", "дисконтинуитет", "разум", "одделение", "обессили" };
 		// { "тврдоглавост", "предуслов", "испопрегледа" };
 		// { "диспропорција" };
 		for (String s : words)
 			System.out.println(Tokenizator.syllableWord(s));
+	}
+
+	public static void tastMakeMatrix()
+	{
+		// double matrix[][] = NGram.makeMatrix(Arrays.asList(1d, 2d, 3d, 4d, 5d, 6d, 7d, 8d, 9d,
+		// 10d, 11d, 12d), 6);
+		// for (int i = 0; i < matrix.length; i++)
+		// {
+		// for (int j = 0; j < matrix[0].length; j++)
+		// System.out.print(matrix[i][j] + "\t");
+		// System.out.println();
+		// }
+
+	}
+
+	public static void testLineareMeasure()
+	{
+		// System.out.println(NGram.getSimilarityLinearMeasure(Arrays.asList("a", "c", "b", "c",
+		// "b"), Arrays.asList("a", "b", "a", "b", "c", "a")));
+		// System.out.println(NGram.getSimilarityLinearMeasure(Arrays.asList("a", "b", "a", "b",
+		// "c", "a"), Arrays.asList("a", "c", "b", "c", "b")));
+		System.out.println(NGram.getSimilarityLinearMeasure(Arrays.asList("a", "a", "b", "b", "b"), Arrays.asList("b", "b", "a", "a")));
+		System.out.println(NGram.getSimilarityJaccard(Arrays.asList("a", "a", "b", "b", "b"), Arrays.asList("b", "b", "a", "a")));
 	}
 
 }
